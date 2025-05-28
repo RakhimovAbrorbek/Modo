@@ -16,9 +16,21 @@ export class UserResponseDto {
 
   @Expose()
   readonly email: string;
-  
+
   @Expose()
   readonly karmaLevel: number;
+
+  @Expose()
+  dateOfBirth:Date
+
+  @Expose()
+  isVerified: boolean
+
+  @Exclude()
+  refreshToken: string;
+
+  @Expose()
+  avatar:string
 
   constructor(partial: Partial<UserResponseDto>) {
     Object.assign(this, partial);
