@@ -23,9 +23,9 @@ export class CreateTaskDto {
 
   @IsNotEmpty()
   @IsString()
-  prority: string;
+  priority: string;
 
   @IsNotEmpty()
   @IsBoolean()
-  is_completed: boolean;
+  isCompleted: boolean;
 }

@@ -29,7 +29,7 @@ export class Task {
     prority:string
 
     @Prop({default:false})
-    is_completed:boolean
+    isCompleted:boolean
 
     
 }
