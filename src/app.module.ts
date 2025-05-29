@@ -10,6 +10,9 @@ import { RemindersModule } from './reminders/reminders.module';
 import { FriendsModule } from './friends/friends.module';
 import { NotesModule } from './notes/notes.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { UpdatesModule } from './updates/updates.module';
+import { StatisticsModule } from './statistics/statistics.module';
+import { SettingsModule } from './settings/settings.module';
 
 
 @Module({
@@ -24,7 +27,10 @@ import { NotificationsModule } from './notifications/notifications.module';
     RemindersModule,
     FriendsModule,
     NotesModule,
-    NotificationsModule
+    NotificationsModule,
+    UpdatesModule,
+    StatisticsModule,
+    SettingsModule
   ],
 })
 export class AppModule {}
