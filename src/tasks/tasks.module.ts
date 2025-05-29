@@ -13,5 +13,6 @@ import { UsersModule } from '../users/users.module';
   ]),UsersModule],
   controllers: [TasksController],
   providers: [TasksService],
+  exports:[TasksService]
 })
 export class TasksModule {}

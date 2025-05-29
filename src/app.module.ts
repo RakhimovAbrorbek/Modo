@@ -9,6 +9,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { FriendsModule } from './friends/friends.module';
 import { NotesModule } from './notes/notes.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -22,7 +23,8 @@ import { NotesModule } from './notes/notes.module';
     TasksModule,
     RemindersModule,
     FriendsModule,
-    NotesModule
+    NotesModule,
+    NotificationsModule
   ],
 })
 export class AppModule {}
