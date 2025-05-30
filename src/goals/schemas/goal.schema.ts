@@ -2,23 +2,24 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { User } from "../../users/schemas/user.schema";
 
-export type NotificationDocument = HydratedDocument<Notification>
+export type GoalDocument = HydratedDocument<Goal>
 @Schema({timestamps:true})
-export class Notification {
-    
+export class Goal {
 
     @Prop({type:mongoose.Schema.Types.ObjectId,ref:User.name})
     userId:mongoose.Schema.Types.ObjectId
 
-    @Prop({enum:['streak','notification','other']})
-    type: string
+    @Prop()
+    title:string
 
 
     @Prop()
-    message:string
+    description:string
 
     @Prop()
-    isRead:boolean
+    progress:number
 
+    @Prop()
+    targetDate:Date
 }
-export const NotificationSchema = SchemaFactory.createForClass(Notification)
+export const GoalSchema = SchemaFactory.createForClass(Goal)
