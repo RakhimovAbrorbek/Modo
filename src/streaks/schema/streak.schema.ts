@@ -10,7 +10,7 @@ export class Streak {
     userId:mongoose.Schema.Types.ObjectId
 
     @Prop()
-    currenStreak:number
+    currentStreak:number
 
     @Prop()
     maxStreak:number

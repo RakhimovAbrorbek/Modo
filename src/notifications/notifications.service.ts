@@ -28,6 +28,9 @@ export class NotificationsService {
   }
 
   async findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const notification = await this.notificationSchema.findById(id).populate("userId")
     if(notification){
       throw new BadRequestException("Notification id is not found")
@@ -36,6 +39,9 @@ export class NotificationsService {
   }
 
   async update(id: string, updateNotificationDto: UpdateNotificationDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const notification = await this.notificationSchema
       .findById(id)
       .populate("userId");
@@ -47,6 +53,9 @@ export class NotificationsService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
      const notification = this.notificationSchema
        .findById(id)
      if (!notification) {

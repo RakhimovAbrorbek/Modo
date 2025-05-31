@@ -3,10 +3,10 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Admin, AdminDocument } from './entities/admin.entity';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 import { plainToInstance } from 'class-transformer';
-import { AdminResponseDto } from './dto/admin.response.dto';
+
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -16,6 +16,11 @@ export class AdminService {
     private readonly jwtService:JwtService
   ) {}
   async create(createAdminDto: CreateAdminDto) {
+    const {email} = createAdminDto
+    const isExists = await this.adminSchema.findOne({email})
+    if(!isExists){
+      throw new BadRequestException("Admin exists with the given email")
+    }
     const { confirmPassword, password, ...otherDto } = createAdminDto;
     if (password !== confirmPassword) {
       throw new BadRequestException("Password do not match");
@@ -29,32 +34,44 @@ export class AdminService {
     return {
       message:
         "Admin Added!",
-      user: plainToInstance(AdminResponseDto, createdAdmin.toObject()),
+      createdAdmin
     };
   }
 
   async findAll() {
     const admins = await this.adminSchema.find({}).lean();
-    return plainToInstance(AdminResponseDto, admins);
+    return admins
   }
 
   async findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const existingAdmin = await this.adminSchema.findOne({ _id: id }).lean();
     if (!existingAdmin) {
       throw new BadRequestException("Admin Not Found");
     }
-    return plainToInstance(AdminResponseDto, existingAdmin);
+   return existingAdmin
   }
 
   async update(id: string, updateAdminDto: UpdateAdminDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const admin = await this.findOne(id);
-    const updatedUser = await this.adminSchema
+    if(!admin){
+      throw new BadRequestException("Admin Not Found")
+    }
+    const updatedAdmin = await this.adminSchema
       .findByIdAndUpdate(id, updateAdminDto)
       .lean();
-    return plainToInstance(AdminResponseDto, updatedUser);
+    return updatedAdmin
   }
 
   async remove(id: string) {
+    if(!isValidObjectId(id)){
+      throw new BadRequestException("Id is invalid")
+    }
     const admin = await this.adminSchema.findById(id);
     if (!admin) {
       throw new BadRequestException("Admin Not Found");

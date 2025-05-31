@@ -28,6 +28,9 @@ export class StatisticsService {
   }
 
   async findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
    const stats = await this.statsSchema.findById(id)
    if(!stats){
     throw new BadRequestException("Stats not found")
@@ -36,6 +39,9 @@ export class StatisticsService {
   }
 
   async update(id: string, updateStatisticDto: UpdateStatisticDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const stats = await this.statsSchema.findById(id);
     if (!stats) {
       throw new BadRequestException("Stats not found");
@@ -45,6 +51,9 @@ export class StatisticsService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const stats = await this.statsSchema.findById(id);
     if (!stats) {
       throw new BadRequestException("Stats not found");

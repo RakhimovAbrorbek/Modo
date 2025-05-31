@@ -14,14 +14,6 @@ export class Statistic {
 
 
   @Prop()
-  totalTasksDone:number
-
-  @Prop()
-  completionRate:number
-
-  @Prop()
-  missedTasks:number
-
-  
+  totalTasksDone:number  
 }
 export const StatisticSchema = SchemaFactory.createForClass(Statistic)

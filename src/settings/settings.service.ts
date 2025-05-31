@@ -28,6 +28,9 @@ export class SettingsService {
   }
 
   async findOne(id:string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const settings = await this.settingSchema.findById(id).populate("userId")
     if(!settings){
       throw new BadRequestException("Settings not found with the given id")
@@ -36,6 +39,9 @@ export class SettingsService {
   }
 
   async update(id: string, updateSettingDto: UpdateSettingDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const settings = await this.settingSchema.findById(id).populate("userId");
     if (!settings) {
       throw new BadRequestException("Settings not found with the given id");
@@ -45,6 +51,9 @@ export class SettingsService {
   }
 
   async remove(id:string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
       const settings = await this.settingSchema.findById(id).populate("userId");
       if (!settings) {
         throw new BadRequestException("Settings not found with the given id");

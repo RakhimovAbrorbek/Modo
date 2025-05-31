@@ -28,6 +28,9 @@ export class StreaksService {
   }
 
   findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const streak = this.streakSchema.findById(id).populate("userId")
     if(!streak){
       throw new BadRequestException("Streak not found with the given id")
@@ -36,6 +39,9 @@ export class StreaksService {
   }
 
   update(id: string, updateStreakDto: UpdateStreakDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
      const streak = this.streakSchema.findById(id).populate("userId");
      if (!streak) {
        throw new BadRequestException("Streak not found with the given id");
@@ -45,6 +51,9 @@ export class StreaksService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const streak = this.streakSchema.findById(id).populate("userId");
     if (!streak) {
       throw new BadRequestException("Streak not found with the given id");

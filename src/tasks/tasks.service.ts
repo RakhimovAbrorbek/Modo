@@ -7,8 +7,6 @@ import { isValidObjectId, Model, Types } from 'mongoose';
 import { UsersService } from '../users/users.service';
 
 
-
-
 @Injectable()
 export class TasksService {
   constructor(@InjectModel(Task.name) private readonly taskSchema: Model<Task>,
@@ -32,6 +30,9 @@ export class TasksService {
   }
 
   async findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
    const task = await this.taskSchema.findById(id).populate("userId")
    if(!task){
     throw new BadRequestException("Task not found with the given Id")
@@ -40,6 +41,9 @@ export class TasksService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const task  = await this.taskSchema.findById(id)
     if(!task){
       throw new BadRequestException("Task not found with the given Id")
@@ -48,6 +52,9 @@ export class TasksService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
      const task = await this.taskSchema.findById(id);
      if (!task) {
        throw new BadRequestException("Task not found with the given Id");

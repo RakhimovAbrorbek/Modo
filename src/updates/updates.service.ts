@@ -3,7 +3,7 @@ import { CreateUpdateDto } from './dto/create-update.dto';
 import { UpdateUpdateDto } from './dto/update-update.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Update } from './schemas/update.schema';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 @Injectable()
 export class UpdatesService {
@@ -17,6 +17,9 @@ export class UpdatesService {
   }
 
   findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const update = this.updateSchema.findById(id)
     if(!update){
       throw new BadRequestException("Update not found")
@@ -25,6 +28,9 @@ export class UpdatesService {
   }
 
   update(id: string, updateUpdateDto: UpdateUpdateDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
      const update = this.updateSchema.findById(id);
      if (!update) {
        throw new BadRequestException("Update not found");
@@ -34,6 +40,9 @@ export class UpdatesService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
       const update = this.updateSchema.findById(id);
       if (!update) {
         throw new BadRequestException("Update not found");

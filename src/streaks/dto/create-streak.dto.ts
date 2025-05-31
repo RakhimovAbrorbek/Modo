@@ -8,7 +8,7 @@ export class CreateStreakDto {
 
   @IsNumber()
   @IsNotEmpty()
-  currenStreak: number;
+  currentStreak: number;
 
   @IsNotEmpty()
   @IsNumber()

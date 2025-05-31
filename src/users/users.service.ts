@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user.response.dto';
@@ -46,6 +46,9 @@ export class UsersService {
   }
 
   async findOne(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const existingUser = await this.userSchema.findOne({ _id: id }).lean();
     if (!existingUser) {
       throw new BadRequestException("User Not Found");
@@ -54,7 +57,13 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const user = await this.findOne(id);
+    if(!user){
+      throw new BadRequestException("User not found with the given id")
+    }
     const updatedUser = await this.userSchema
       .findByIdAndUpdate(id, updateUserDto)
       .lean();
@@ -62,6 +71,9 @@ export class UsersService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const user = await this.userSchema.findOne({ _id: id });
     if (!user) {
       throw new BadRequestException("User Not Found");

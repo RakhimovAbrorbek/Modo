@@ -29,6 +29,9 @@ export class InsightsService {
   }
 
   findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException("Id is invalid");
+    }
   const insight = this.insightSchema.findById(id).populate("userId")
   if(!insight){
     throw new BadRequestException("Insight not found with the given id")
@@ -37,6 +40,9 @@ export class InsightsService {
   }
 
   async update(id: string, updateInsightDto: UpdateInsightDto) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const insight = this.insightSchema.findById(id).populate("userId");
     if (!insight) {
       throw new BadRequestException("Insight not found with the given id");
@@ -46,6 +52,9 @@ export class InsightsService {
   }
 
   async remove(id: string) {
+     if (!isValidObjectId(id)) {
+       throw new BadRequestException("Id is invalid");
+     }
     const insight = this.insightSchema.findById(id).populate("userId");
     if (!insight) {
       throw new BadRequestException("Insight not found with the given id");

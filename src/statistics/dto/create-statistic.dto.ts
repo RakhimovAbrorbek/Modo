@@ -12,12 +12,4 @@ export class CreateStatisticDto {
   @IsNotEmpty()
   @IsNumber()
   totalTasksDone: number;
-
-   @IsNotEmpty()
-   @IsNumber()
-   completionRate: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  missedTasks: number;
 }
