@@ -18,7 +18,7 @@ export class AdminService {
   async create(createAdminDto: CreateAdminDto) {
     const {email} = createAdminDto
     const isExists = await this.adminSchema.findOne({email})
-    if(!isExists){
+    if(isExists){
       throw new BadRequestException("Admin exists with the given email")
     }
     const { confirmPassword, password, ...otherDto } = createAdminDto;

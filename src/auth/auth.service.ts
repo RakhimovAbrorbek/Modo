@@ -39,6 +39,7 @@ export class AuthService {
       id: user.id,
       isVerified: user.isVerified,
       email: user.email,
+      role: "user"
     };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
@@ -140,6 +141,7 @@ export class AuthService {
       id: admin.id,
       isCreator: admin.isCreator,
       email: admin.email,
+      role: "admin"
     };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {

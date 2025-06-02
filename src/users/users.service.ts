@@ -6,7 +6,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { isValidObjectId, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 import { plainToInstance } from 'class-transformer';
-import { UserResponseDto } from './dto/user.response.dto';
+
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 
@@ -36,13 +36,13 @@ export class UsersService {
     }
     return {
       message: "User signed up successfully Please Check Your Email to Verify your Account!",
-      user: plainToInstance(UserResponseDto, createdUser.toObject()),
+      user: createdUser
     };
   }
 
   async findAll() {
     const users = await this.userSchema.find({}).lean();
-    return plainToInstance(UserResponseDto, users);
+    return users
   }
 
   async findOne(id: string) {
@@ -53,7 +53,7 @@ export class UsersService {
     if (!existingUser) {
       throw new BadRequestException("User Not Found");
     }
-    return plainToInstance(UserResponseDto, existingUser);
+    return existingUser
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -67,7 +67,7 @@ export class UsersService {
     const updatedUser = await this.userSchema
       .findByIdAndUpdate(id, updateUserDto)
       .lean();
-    return plainToInstance(UserResponseDto, updatedUser);
+    return updatedUser
   }
 
   async remove(id: string) {
