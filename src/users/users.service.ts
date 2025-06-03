@@ -5,8 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { isValidObjectId, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
-import { plainToInstance } from 'class-transformer';
-
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 

@@ -4,12 +4,16 @@ import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as basicAuth from "express-basic-auth";
+import { WinstonModule } from "nest-winston";
+import { winstonConfig } from "./common/logger/winston.logger";
+import { AllExceptionsFilter } from "./common/errors/error.handling";
 async function start() {
   try {
     const PORT = process.env.PORT || 3030;
     const app = await NestFactory.create(AppModule, {
-      logger: ["debug", "error"],
+      logger: WinstonModule.createLogger(winstonConfig)
     });
+    app.useGlobalFilters(new AllExceptionsFilter());
      app.useGlobalPipes(new ValidationPipe());
      app.use(cookieParser());
      app.setGlobalPrefix("api");

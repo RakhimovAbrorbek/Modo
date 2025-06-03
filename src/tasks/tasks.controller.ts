@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./dto/create-task.dto";
@@ -23,6 +24,7 @@ import {
   ApiParam,
   ApiBody,
 } from "@nestjs/swagger";
+import { TaskFilterDto } from "./dto/task.filter.dto";
 
 @ApiTags("tasks")
 @Controller("tasks")
@@ -91,5 +93,11 @@ export class TasksController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.tasksService.remove(id);
+  }
+
+
+  @Get("notCompletedTasks")
+  getUndoneTasks(@Query() taskFilterDto:TaskFilterDto){
+    return this.tasksService.FindUndoneTasksByUserId(taskFilterDto);
   }
 }

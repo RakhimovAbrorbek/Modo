@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './schemas/task.schema';
 import { isValidObjectId, Model, Types } from 'mongoose';
 import { UsersService } from '../users/users.service';
+import { TaskFilterDto } from './dto/task.filter.dto';
 
 
 @Injectable()
@@ -61,5 +62,16 @@ export class TasksService {
      }
      await this.taskSchema.findByIdAndDelete(id)
      return {message:"Task deleted successfully"}
+  }
+  async FindUndoneTasksByUserId(taskFilterDto:TaskFilterDto){
+    if(!taskFilterDto.userId){
+      throw new BadRequestException("User Id is not provided")
+    }
+    const {userId} = taskFilterDto
+    const tasks = await this.taskSchema.find({
+      userId,
+      isCompleted:false
+    }).exec()
+    return tasks
   }
 }
