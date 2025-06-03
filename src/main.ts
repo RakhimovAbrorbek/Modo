@@ -1,4 +1,5 @@
 import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
@@ -7,16 +8,31 @@ import * as basicAuth from "express-basic-auth";
 import { WinstonModule } from "nest-winston";
 import { winstonConfig } from "./common/logger/winston.logger";
 import { AllExceptionsFilter } from "./common/errors/error.handling";
+import { join } from "path";
+
 async function start() {
   try {
     const PORT = process.env.PORT || 3030;
-    const app = await NestFactory.create(AppModule, {
-      logger: WinstonModule.createLogger(winstonConfig)
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+      logger: WinstonModule.createLogger(winstonConfig),
     });
+
+    app.enableCors({
+      origin: true,
+      credentials: true,
+    });
+
     app.useGlobalFilters(new AllExceptionsFilter());
-     app.useGlobalPipes(new ValidationPipe());
-     app.use(cookieParser());
-     app.setGlobalPrefix("api");
+    app.useGlobalPipes(new ValidationPipe());
+    app.use(cookieParser());
+    app.setGlobalPrefix("api");
+
+   
+    const staticPath = join(__dirname, "..", "uploads");
+    app.useStaticAssets(staticPath, {
+      prefix: "/uploads/",
+    });
+
     app.use(
       ["/docs"],
       basicAuth({
@@ -38,10 +54,12 @@ async function start() {
         "access-token"
       )
       .build();
+
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("docs", app, document);
+
     await app.listen(PORT, () => {
-      console.log(`Server started at http://localhost:${PORT} 🔥`);
+      console.log(` Server started at http://localhost:${PORT} 🔥`);
     });
   } catch (error) {
     console.log(error);

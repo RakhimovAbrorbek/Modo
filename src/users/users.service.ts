@@ -7,11 +7,13 @@ import { isValidObjectId, Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userSchema: Model<User>,
+    private readonly fileService: FileService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService
   ) {}
@@ -27,51 +29,52 @@ export class UsersService {
     });
     await createdUser.save();
     try {
-      await this.mailService.sendMail(createdUser)
+      await this.mailService.sendMail(createdUser);
     } catch (error) {
-        console.log(error);
-      throw new BadRequestException("Email Yuborishda Xatolik!")
+      console.log(error);
+      throw new BadRequestException("Email Yuborishda Xatolik!");
     }
     return {
-      message: "User signed up successfully Please Check Your Email to Verify your Account!",
-      user: createdUser
+      message:
+        "User signed up successfully Please Check Your Email to Verify your Account!",
+      user: createdUser,
     };
   }
 
   async findAll() {
     const users = await this.userSchema.find({}).lean();
-    return users
+    return users;
   }
 
   async findOne(id: string) {
-     if (!isValidObjectId(id)) {
-       throw new BadRequestException("Id is invalid");
-     }
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException("Id is invalid");
+    }
     const existingUser = await this.userSchema.findOne({ _id: id }).lean();
     if (!existingUser) {
       throw new BadRequestException("User Not Found");
     }
-    return existingUser
+    return existingUser;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-     if (!isValidObjectId(id)) {
-       throw new BadRequestException("Id is invalid");
-     }
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException("Id is invalid");
+    }
     const user = await this.findOne(id);
-    if(!user){
-      throw new BadRequestException("User not found with the given id")
+    if (!user) {
+      throw new BadRequestException("User not found with the given id");
     }
     const updatedUser = await this.userSchema
       .findByIdAndUpdate(id, updateUserDto)
       .lean();
-    return updatedUser
+    return updatedUser;
   }
 
   async remove(id: string) {
-     if (!isValidObjectId(id)) {
-       throw new BadRequestException("Id is invalid");
-     }
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException("Id is invalid");
+    }
     const user = await this.userSchema.findOne({ _id: id });
     if (!user) {
       throw new BadRequestException("User Not Found");
@@ -110,19 +113,27 @@ export class UsersService {
     if (!link) {
       throw new BadRequestException("Activation link not found");
     }
-    const updatedUser = await this.userSchema.findOne({activationLink:link})
-    if(!updatedUser){
-      throw  new BadRequestException("Invalid or Expired Activation Link")
+    const updatedUser = await this.userSchema.findOne({ activationLink: link });
+    if (!updatedUser) {
+      throw new BadRequestException("Invalid or Expired Activation Link");
     }
     if (updatedUser.isVerified) {
       throw new BadRequestException("User already activated");
     }
-    updatedUser.isVerified=true
-    await updatedUser.save()
+    updatedUser.isVerified = true;
+    await updatedUser.save();
     return {
       message: "User activated successfully",
-      isVerified:true
+      isVerified: true,
     };
   }
 
+  async updateUserAvatar(userId: string, file: Express.Multer.File) {
+    const fileName = this.fileService.saveFile(file, userId);
+    await this.userSchema.findByIdAndUpdate(userId, {
+      avatar: fileName,
+    });
+
+    return {message:"Image successfully saved!", FileName:fileName}
+  }
 }

@@ -13,6 +13,7 @@ import { SettingsModule } from './settings/settings.module';
 import { InsightsModule } from './insights/insights.module';
 import { StreaksModule } from './streaks/streaks.module';
 import { GoalsModule } from './goals/goals.module';
+import { FileModule } from './file/file.module';
 
 
 
@@ -32,6 +33,7 @@ import { GoalsModule } from './goals/goals.module';
     InsightsModule,
     StreaksModule,
     GoalsModule,
+    FileModule,
   ],
   providers: [],
 })

@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Req,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -23,13 +26,14 @@ import {
   ApiParam,
   ApiBody,
 } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("users")
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new user" })
@@ -42,7 +46,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all users" })
@@ -107,5 +111,19 @@ export class UsersController {
   @Get("activate/:link")
   activateUser(@Param("link") link: string) {
     return this.usersService.activateUser(link);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("user")
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Upload avatar of the user" })
+  @ApiParam({ name: "id", type: String, description: "User ID" })
+  @Post("avatar")
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadAvatar(
+    @Body("userId") userId: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.usersService.updateUserAvatar(userId, file);
   }
 }
