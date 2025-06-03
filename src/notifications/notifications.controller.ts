@@ -20,7 +20,8 @@ import { NotificationsService } from "./notifications.service";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
 import { UpdateNotificationDto } from "./dto/update-notification.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
 
 @ApiTags("notifications")
 @ApiBearerAuth() 
@@ -28,7 +29,8 @@ import { AdminGuard } from "../common/guards/admin.guard";
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Post()
   @ApiOperation({ summary: "Create a new notification (Admin only)" })
   @ApiResponse({
@@ -41,7 +43,8 @@ export class NotificationsController {
     return this.notificationsService.create(createNotificationDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Get()
   @ApiOperation({ summary: "Get all notifications (Admin only)" })
   @ApiResponse({ status: 200, description: "List of notifications returned." })
@@ -50,7 +53,8 @@ export class NotificationsController {
     return this.notificationsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Get(":id")
   @ApiOperation({ summary: "Get a notification by ID (Admin only)" })
   @ApiParam({ name: "id", description: "Notification ID" })
@@ -61,7 +65,8 @@ export class NotificationsController {
     return this.notificationsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Patch(":id")
   @ApiOperation({ summary: "Update a notification by ID (Admin only)" })
   @ApiParam({ name: "id", description: "Notification ID" })
@@ -76,7 +81,8 @@ export class NotificationsController {
     return this.notificationsService.update(id, updateNotificationDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Delete(":id")
   @ApiOperation({ summary: "Delete a notification by ID (Admin only)" })
   @ApiParam({ name: "id", description: "Notification ID" })

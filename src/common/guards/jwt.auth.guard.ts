@@ -5,44 +5,44 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Observable } from "rxjs";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
+  ) {}
 
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      throw new UnauthorizedException({
-        message: "User is not authorized.",
-      });
+      throw new UnauthorizedException("Authorization header missing");
     }
 
-    const [bearer, token] = authHeader.split(" ");
-    if (bearer !== "Bearer" || !token) {
-      throw new UnauthorizedException({
-        message: "Bearer token not found or malformed.",
-      });
+    const parts = authHeader.split(" ");
+    if (parts.length !== 2) {
+      throw new UnauthorizedException("Authorization header malformed");
     }
 
-    let user: any;
+    const [bearer, token] = parts;
+    if (bearer !== "Bearer") {
+      throw new UnauthorizedException(
+        "Authorization header must start with Bearer"
+      );
+    }
+
     try {
-      user = this.jwtService.verify(token, {
-        secret: process.env.ACCESS_TOKEN_KEY,
-      });
-    } catch (error) {
-      throw new UnauthorizedException({
-        message: error.message || "Invalid token.",
-        error: error,
-      });
-    }
+      const secret = this.configService.get<string>("ACCESS_TOKEN_KEY");
+      const user = this.jwtService.verify(token, { secret });
+      
+      req.user = user;
 
-    req.user = user;
-    return true;
+      return true;
+    } catch {
+      throw new UnauthorizedException("Invalid or expired token");
+    }
   }
 }

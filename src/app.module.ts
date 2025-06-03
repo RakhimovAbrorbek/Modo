@@ -15,6 +15,7 @@ import { StreaksModule } from './streaks/streaks.module';
 import { GoalsModule } from './goals/goals.module';
 
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: ".env", isGlobal: true }),
@@ -32,5 +33,6 @@ import { GoalsModule } from './goals/goals.module';
     StreaksModule,
     GoalsModule,
   ],
+  providers: [],
 })
 export class AppModule {}

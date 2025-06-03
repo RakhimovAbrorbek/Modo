@@ -12,7 +12,8 @@ import { StreaksService } from "./streaks.service";
 import { CreateStreakDto } from "./dto/create-streak.dto";
 import { UpdateStreakDto } from "./dto/update-streak.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+
+
 import {
   ApiTags,
   ApiOperation,
@@ -21,13 +22,16 @@ import {
   ApiParam,
   ApiBody,
 } from "@nestjs/swagger";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
 
 @ApiTags("streaks")
 @Controller("streaks")
 export class StreaksController {
   constructor(private readonly streaksService: StreaksService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new streak" })
   @ApiBody({ type: CreateStreakDto })
@@ -39,7 +43,8 @@ export class StreaksController {
     return this.streaksService.create(createStreakDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all streaks" })
   @ApiResponse({ status: 200, description: "List of all streaks" })
@@ -50,7 +55,8 @@ export class StreaksController {
     return this.streaksService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get a streak by ID" })
   @ApiParam({ name: "id", type: String, description: "Streak ID" })
@@ -63,7 +69,8 @@ export class StreaksController {
     return this.streaksService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update a streak by ID" })
   @ApiParam({ name: "id", type: String, description: "Streak ID" })
@@ -77,7 +84,8 @@ export class StreaksController {
     return this.streaksService.update(id, updateStreakDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete a streak by ID" })
   @ApiParam({ name: "id", type: String, description: "Streak ID" })

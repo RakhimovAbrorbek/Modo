@@ -12,7 +12,7 @@ import { StatisticsService } from "./statistics.service";
 import { CreateStatisticDto } from "./dto/create-statistic.dto";
 import { UpdateStatisticDto } from "./dto/update-statistic.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+
 import {
   ApiTags,
   ApiOperation,
@@ -21,13 +21,16 @@ import {
   ApiParam,
   ApiBody,
 } from "@nestjs/swagger";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
 
 @ApiTags("statistics")
 @Controller("statistics")
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new statistic" })
   @ApiBody({ type: CreateStatisticDto })
@@ -39,7 +42,8 @@ export class StatisticsController {
     return this.statisticsService.create(createStatisticDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all statistics" })
   @ApiResponse({ status: 200, description: "List of all statistics" })
@@ -50,7 +54,8 @@ export class StatisticsController {
     return this.statisticsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get a statistic by ID" })
   @ApiParam({ name: "id", type: String, description: "Statistic ID" })
@@ -63,7 +68,8 @@ export class StatisticsController {
     return this.statisticsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update a statistic by ID" })
   @ApiParam({ name: "id", type: String, description: "Statistic ID" })
@@ -80,7 +86,8 @@ export class StatisticsController {
     return this.statisticsService.update(id, updateStatisticDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete a statistic by ID" })
   @ApiParam({ name: "id", type: String, description: "Statistic ID" })

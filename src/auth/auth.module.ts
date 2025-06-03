@@ -6,9 +6,14 @@ import { UsersModule } from '../users/users.module';
 import { AdminModule } from '../admin/admin.module';
 
 @Module({
-  imports:[JwtModule.register({
-    global:true
-  }),UsersModule,AdminModule],
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.ACCESS_TOKEN_KEY
+    }),
+    UsersModule,
+    AdminModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })

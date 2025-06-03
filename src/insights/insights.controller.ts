@@ -14,7 +14,7 @@ import { UpdateInsightDto } from "./dto/update-insight.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+
 import {
   ApiTags,
   ApiOperation,
@@ -46,6 +46,7 @@ export class InsightsController {
     return this.insightsService.findAll();
   }
 
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("user")
   @Get(":id")
@@ -55,14 +56,19 @@ export class InsightsController {
     return this.insightsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Patch(":id")
   @ApiOperation({ summary: "Update insight (Admin only)" })
   update(@Param("id") id: string, @Body() updateInsightDto: UpdateInsightDto) {
     return this.insightsService.update(id, updateInsightDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+
+
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin")
   @Delete(":id")
   @ApiOperation({ summary: "Delete insight (Admin only)" })
   remove(@Param("id") id: string) {

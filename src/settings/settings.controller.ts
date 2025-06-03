@@ -21,7 +21,8 @@ import { SettingsService } from "./settings.service";
 import { CreateSettingDto } from "./dto/create-setting.dto";
 import { UpdateSettingDto } from "./dto/update-setting.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
 
 @ApiTags("settings")
 @ApiBearerAuth()
@@ -29,7 +30,8 @@ import { AdminGuard } from "../common/guards/admin.guard";
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Post()
   @ApiOperation({ summary: "Create a new setting" })
   @ApiResponse({ status: 201, description: "Setting created successfully." })
@@ -39,7 +41,8 @@ export class SettingsController {
     return this.settingsService.create(createSettingDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Get()
   @ApiOperation({ summary: "Get all settings" })
   @ApiResponse({ status: 200, description: "List of all settings." })
@@ -47,7 +50,8 @@ export class SettingsController {
     return this.settingsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Get(":id")
   @ApiOperation({ summary: "Get setting by ID" })
   @ApiResponse({ status: 200, description: "Setting details." })
@@ -57,7 +61,8 @@ export class SettingsController {
     return this.settingsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Patch(":id")
   @ApiOperation({ summary: "Update setting by ID" })
   @ApiResponse({ status: 200, description: "Setting updated successfully." })
@@ -69,7 +74,8 @@ export class SettingsController {
     return this.settingsService.update(id, updateSettingDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Delete(":id")
   @ApiOperation({ summary: "Delete setting by ID" })
   @ApiResponse({ status: 200, description: "Setting deleted successfully." })

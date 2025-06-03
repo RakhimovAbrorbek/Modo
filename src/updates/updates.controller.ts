@@ -12,10 +12,9 @@ import { UpdatesService } from "./updates.service";
 import { CreateUpdateDto } from "./dto/create-update.dto";
 import { UpdateUpdateDto } from "./dto/update-update.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { SuperAdminGuard } from "../common/guards/superadmin.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { Roles } from "../common/decorators/roles.decorator";
-import { AdminGuard } from "../common/guards/admin.guard";
+
 import {
   ApiTags,
   ApiOperation,
@@ -24,13 +23,15 @@ import {
   ApiParam,
   ApiBody,
 } from "@nestjs/swagger";
+import { CreatorGuard } from "../common/guards/creator.guard";
 
 @ApiTags("updates")
 @Controller("updates")
 export class UpdatesController {
   constructor(private readonly updatesService: UpdatesService) {}
 
-  @UseGuards(JwtAuthGuard, SuperAdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard, CreatorGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new update" })
   @ApiBody({ type: CreateUpdateDto })
@@ -42,7 +43,7 @@ export class UpdatesController {
     return this.updatesService.create(createUpdateDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles("user")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all updates" })
@@ -54,7 +55,8 @@ export class UpdatesController {
     return this.updatesService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("user")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get an update by ID" })
   @ApiParam({ name: "id", type: String, description: "Update ID" })
@@ -67,7 +69,8 @@ export class UpdatesController {
     return this.updatesService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, SuperAdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard, CreatorGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update an update by ID" })
   @ApiParam({ name: "id", type: String, description: "Update ID" })
@@ -81,7 +84,8 @@ export class UpdatesController {
     return this.updatesService.update(id, updateUpdateDto);
   }
 
-  @UseGuards(JwtAuthGuard, SuperAdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard,CreatorGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete an update by ID" })
   @ApiParam({ name: "id", type: String, description: "Update ID" })

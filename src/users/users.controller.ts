@@ -12,7 +12,6 @@ import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { JwtSelfGuard } from "../common/guards/self.guard";
 import { Roles } from "../common/decorators/roles.decorator";
@@ -30,7 +29,8 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new user" })
   @ApiBody({ type: CreateUserDto })
@@ -42,7 +42,8 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all users" })
   @ApiResponse({ status: 200, description: "List of all users" })
@@ -82,7 +83,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete a user by ID" })
   @ApiParam({ name: "id", type: String, description: "User ID" })

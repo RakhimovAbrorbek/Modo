@@ -19,7 +19,9 @@ import { SignInDto } from "../users/dto/sign-in.dto";
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { Request, Response } from "express";
 import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { AdminGuard } from "../common/guards/admin.guard";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
+
 
 @ApiTags("auth")
 @Controller("auth")
@@ -45,7 +47,8 @@ export class AuthController {
     return this.authService.signInUser(signInDto, res);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("user")
   @Post("sign-out-user")
   @HttpCode(200)
   @ApiBearerAuth("access-token")
@@ -58,7 +61,8 @@ export class AuthController {
     return this.authService.signOutuser(req, res);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("user")
   @Get("refresh-user")
   @HttpCode(200)
   @ApiBearerAuth("access-token")
@@ -82,7 +86,8 @@ export class AuthController {
     return this.authService.signInAdmin(signInDto, res);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Post("sign-out-admin")
   @HttpCode(200)
   @ApiBearerAuth("access-token")
@@ -95,7 +100,8 @@ export class AuthController {
     return this.authService.signOutAdmin(req, res);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Get("refresh-admin")
   @HttpCode(200)
   @ApiBearerAuth("access-token")
