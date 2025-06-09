@@ -6,16 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
+  UseGuards,
   Req,
 } from "@nestjs/common";
-import { TasksService } from "./tasks.service";
-import { CreateTaskDto } from "./dto/create-task.dto";
-import { UpdateTaskDto } from "./dto/update-task.dto";
-import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { RolesGuard } from "../common/guards/roles.guard";
-import { Roles } from "../common/decorators/roles.decorator";
+
 import {
   ApiTags,
   ApiOperation,
@@ -25,7 +20,18 @@ import {
   ApiBody,
   ApiQuery,
 } from "@nestjs/swagger";
+
+import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
+
+import { TasksService } from "./tasks.service";
+
+import { CreateTaskDto } from "./dto/create-task.dto";
+import { UpdateTaskDto } from "./dto/update-task.dto";
 import { GetTasksDto } from "./dto/get-tasks.dto";
+import { Request } from "express";
+import { User } from "../common/decorators/user.decorator";
 
 @ApiTags("tasks")
 @Controller("tasks")
@@ -54,8 +60,8 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   @ApiResponse({ status: 403, description: "Forbidden" })
   @Get("priority")
-  findWithPriority(@Query() getTasksDto: GetTasksDto) {
-    return this.tasksService.getTasksWithPriority(getTasksDto);
+  findWithPriority(@Query() getTasksDto: GetTasksDto,@User() user:{id:string}) {
+    return this.tasksService.getTasksWithPriority(getTasksDto,user.id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -70,8 +76,8 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   @ApiResponse({ status: 403, description: "Forbidden" })
   @Get("incomplete")
-  async getNotCompletedTasks(@Query("userId") userId: string) {
-    return this.tasksService.findNotCompleted(userId);
+  async getNotCompletedTasks(@User() user:{id:string}) {
+    return this.tasksService.findNotCompleted(user.id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -86,8 +92,8 @@ export class TasksController {
   @ApiResponse({ status: 401, description: "Unauthorized" })
   @ApiResponse({ status: 403, description: "Forbidden" })
   @Get("complete")
-  async getCompletedTasks(@Query("userId") userId: string) {
-    return this.tasksService.findCompleted(userId);
+  async getCompletedTasks(@User() user:{id:string}) {
+    return this.tasksService.findCompleted(user.id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

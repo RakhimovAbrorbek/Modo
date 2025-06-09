@@ -103,8 +103,8 @@ export class TasksService {
     return { message: "Task Done", task };
   }
 
-  async getTasksWithPriority(getTasksDto: GetTasksDto) {
-    const { level, userId } = getTasksDto;
+  async getTasksWithPriority(getTasksDto: GetTasksDto,userId:string) {
+    const { level} = getTasksDto;
     if (!level) {
       throw new BadRequestException("Level is not provided");
     }
