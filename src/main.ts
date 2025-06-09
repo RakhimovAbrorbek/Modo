@@ -18,7 +18,11 @@ async function start() {
     });
 
     app.enableCors({
-      origin: true,
+      origin: [
+        "http://localhost:3000", 
+        "http://localhost:8080", 
+        "https://Modo.com:443",
+      ],
       credentials: true,
     });
 
@@ -36,7 +40,7 @@ async function start() {
     app.use(
       ["/docs"],
       basicAuth({
-        users: { Tyler: "Hallo" },
+        users: { Mark: "Hallo" },
         challenge: true,
       })
     );

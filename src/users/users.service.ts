@@ -8,6 +8,8 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import { FileService } from '../file/file.service';
+import { StatisticsService } from '../statistics/statistics.service';
+import { CreateStatisticDto } from '../statistics/dto/create-statistic.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,10 +17,11 @@ export class UsersService {
     @InjectModel(User.name) private readonly userSchema: Model<User>,
     private readonly fileService: FileService,
     private readonly jwtService: JwtService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    // private readonly StatisticsService: StatisticsService
   ) {}
   async create(createUserDto: CreateUserDto) {
-    const { confirmPassword, password, ...otherDto } = createUserDto;
+    const { confirmPassword, password, ...otherDto} = createUserDto;
     if (password !== confirmPassword) {
       throw new BadRequestException("Password do not match");
     }
@@ -34,10 +37,17 @@ export class UsersService {
       console.log(error);
       throw new BadRequestException("Email Yuborishda Xatolik!");
     }
+    // const statisticDto: CreateStatisticDto = {
+    //   userId: createdUser.email,
+    //   totalTasksCreated: 0,
+    //   totalTasksDone: 0,
+    // };
+    // const userStats = await this.StatisticsService.create(statisticDto)
     return {
       message:
         "User signed up successfully Please Check Your Email to Verify your Account!",
       user: createdUser,
+      // stats: userStats
     };
   }
 
@@ -134,6 +144,6 @@ export class UsersService {
       avatar: fileName,
     });
 
-    return {message:"Image successfully saved!", FileName:fileName}
+    return { message: "Image successfully saved!", FileName: fileName };
   }
 }

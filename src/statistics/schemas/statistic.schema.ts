@@ -33,3 +33,4 @@ export class Statistic {
 }
 
 export const StatisticSchema = SchemaFactory.createForClass(Statistic);
+

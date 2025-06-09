@@ -59,6 +59,18 @@ export class StatisticsService {
       throw new BadRequestException("Stats not found");
     }
     await this.statsSchema.findByIdAndDelete(id)
-    return {message:"User statistis deleted"}
+    return {message:"User statistics deleted"}
+  }
+  async addUserTask(userId:string){
+     if (!isValidObjectId(userId)) {
+       throw new BadRequestException("Id is invalid");
+     }
+     const user = await this.statsSchema.findOne({userId})
+     if(!user){
+      throw new BadRequestException("User not found")
+     }
+     user.totalTasksCreated+=1
+     await user.save()
+     return user
   }
 }

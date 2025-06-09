@@ -16,7 +16,6 @@ export class CreateStatisticDto {
   @ApiProperty({
     type: Number,
     description: "Total number of tasks created by the user",
-    required: true,
   })
   totalTasksCreated: number;
 

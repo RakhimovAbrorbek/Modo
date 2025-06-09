@@ -117,7 +117,6 @@ export class UsersController {
   @Roles("user")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Upload avatar of the user" })
-  @ApiParam({ name: "id", type: String, description: "User ID" })
   @Post("avatar")
   @UseInterceptors(FileInterceptor("file"))
   async uploadAvatar(

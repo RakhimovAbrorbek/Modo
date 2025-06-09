@@ -12,7 +12,6 @@ export class SignInDto {
 
   @ApiProperty({ example: "strongPassword123", description: "User password" })
   @IsString()
-  @MinLength(6)
   @IsNotEmpty()
   password: string;
 }

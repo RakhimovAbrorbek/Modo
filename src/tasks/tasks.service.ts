@@ -6,12 +6,14 @@ import { Task } from './schemas/task.schema';
 import { isValidObjectId, Model, Types } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { GetTasksDto } from './dto/get-tasks.dto';
+import { StatisticsService } from '../statistics/statistics.service';
 
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectModel(Task.name) private readonly taskSchema: Model<Task>,
+    private readonly StatisticsService: StatisticsService,
     private readonly userService: UsersService
   ) {}
   async create(createTaskDto: CreateTaskDto) {
@@ -24,6 +26,7 @@ export class TasksService {
       throw new BadRequestException("User not found with the given ID");
     }
     const newTask = await this.taskSchema.create(createTaskDto);
+    await this.StatisticsService.addUserTask(userId)
     return { message: "Task Created Successfully!", newTask };
   }
 
